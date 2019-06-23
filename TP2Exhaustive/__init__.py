@@ -61,6 +61,69 @@ def generateElements(N, isRandom, maxVol, maxPrice):
     print()
     return elements
 
+# Elements may be created randomly or with inputs
+def generateElementsForGreedy(N, isRandom, maxVol, maxPrice):
+    elements = [[] for _ in range(N)]  # Every Element has 3 values: Position (0), Price Value (0) and Volume (1)
+    if isRandom:
+        for i in range(N):
+            num = i+1
+            p = round(random.uniform(0, maxPrice), 3)
+            v = round(random.uniform(0, maxVol), 3)
+            b = round(p/v, 3)
+            elements[i].append(num)
+            elements[i].append(p)
+            elements[i].append(v)
+            elements[i].append(b)
+    else:
+        for i in range(N):
+            num = i+1
+            print("Ingrese Precio de elemento", i+1, ":", end="")
+            p = round(float(input()), 3)
+            print("Ingrese Volumen de elemento", i+1, ":", end="")
+            v = round(float(input()), 3)
+            print()
+            b = p/v
+            elements[i].append(num)
+            elements[i].append(p)
+            elements[i].append(v)
+            elements[i].append(b)
+    print("Elementos:")
+    for j in range(N):
+        print("    Num "+str(elements[j][0])+": $"+str(elements[j][1])+", "+str(elements[j][2])+" gramos, beneficio "+str(elements[j][3]))
+    elements.sort(key=lambda x: x[3], reverse=True)  # Orders by benefit (higher to lower)
+    return elements
+
+def loadBackpack(N, elements, maxVolume, initialTime):
+    backpack = []
+    partialP = 0
+    partialV = 0
+    # partialB = 0
+    for i in range(N):
+        aux = []
+        partialP += elements[i][1]
+        partialV += elements[i][2]
+        # partialB += elements[i][3]
+        if partialV <= maxVolume:
+            aux.append(elements[i][0])
+            aux.append(elements[i][1])
+            aux.append(elements[i][2])
+            aux.append(elements[i][3])
+        else:
+            partialP -= elements[i][1]
+            partialV -= elements[i][2]
+            # partialB -= elements[i][3]
+        if aux!=[]:
+            backpack.append(aux)
+    backpack.sort(key=lambda x: x[0])           # Orders by item number (lower to higher)
+    print()
+    print("Valor Acumulado de Precios: $" + str(round(partialP, 3)))
+    print("Peso Total: " + str(round(partialV, 3)) + " gramos")
+    # print("Beneficio acumulado: " + str(round(partialB, 3)))
+    print("Elementos cargados:")
+    for j in range(len(backpack)):
+        print("    Num " + str(backpack[j][0]) + ": $" + str(backpack[j][1]) + ", " + str(backpack[j][2]) + " gramos, beneifcio " + str(backpack[j][3]))
+    finalTime = time()
+    return finalTime-initialTime
 
 # Calculate all the Possible Solutions sub-sets
 def calculatePossibleSolutions(elements):
@@ -113,6 +176,12 @@ def findBestSolution(solutions, maxVol, initialTime):
     finalTime = time()
     return finalTime-initialTime
 
+def menu():
+    strs = ('1) Metodo Exhaustivo\n'
+            '2) Metodo Greedy\n'
+            '3) Salir\n')
+    choice = input(strs)
+    return int(choice)
 
 # Main Function
 if __name__ == '__main__':
@@ -121,16 +190,48 @@ if __name__ == '__main__':
     randomCreation = True  # False: You must specify all elements value - True: They will create randomly
     bagMaxVolume = 4200  # Maximum Bag Capacity (in grams)
     maxPriceValue = 6000  # Maximum Money Value for an Element (only in Random Creation)
-    initialTime = time()  # Initial Time Mark
 
-    # Generate all the N Elements
-    elements = generateElements(totalElements, randomCreation, bagMaxVolume, maxPriceValue)
+    while True:
+        choice = menu()
+        if choice == 1:
+            if randomCreation == True:
+                initialTime = time()  # Initial Time Mark
+                # Generate all the N Elements
+                elements = generateElements(totalElements, randomCreation, bagMaxVolume, maxPriceValue)
+            else:
+                # Generate all the N Elements
+                elements = generateElements(totalElements, randomCreation, bagMaxVolume, maxPriceValue)
+                initialTime = time()  # Initial Time Mark
 
-    # Calculate all the Possible Solutions
-    solutions = calculatePossibleSolutions(elements)
+            # Calculate all the Possible Solutions
+            solutions = calculatePossibleSolutions(elements)
 
-    # Exhaustive Search on the Solutions Set
-    totalTime = findBestSolution(solutions, bagMaxVolume, initialTime)
+            # Exhaustive Search on the Solutions Set
+            totalTime = findBestSolution(solutions, bagMaxVolume, initialTime)
 
-    print()
-    print("Solución obtenida correctamente en", totalTime, "segundos")
+            print()
+            print("Solución obtenida correctamente en", totalTime, "segundos")
+            break
+        elif choice == 2:
+            if randomCreation == True:
+                initialTime = time()  # Initial Time Mark
+                # Generate all the N Elements
+                elements = generateElementsForGreedy(totalElements, randomCreation, bagMaxVolume, maxPriceValue)
+            else:
+                # Generate all the N Elements
+                elements = generateElementsForGreedy(totalElements, randomCreation, bagMaxVolume, maxPriceValue)
+                initialTime = time()  # Initial Time Mark
+
+            # Executes Greedy method
+            totalTime = loadBackpack(totalElements, elements, bagMaxVolume, initialTime)
+
+            print()
+            print("Solución obtenida correctamente en", totalTime, "segundos")
+            break
+        elif choice == 3:
+            break
+
+
+
+
+
