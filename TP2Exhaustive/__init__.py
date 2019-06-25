@@ -57,7 +57,7 @@ def generateElements(N, isRandom, maxVol, maxPrice):
             elements[2][i] = v
     print("Elementos:")
     for j in range(N):
-        print("Num "+str(elements[0][j])+": $"+str(elements[1][j])+", "+str(elements[2][j])+" gramos")
+        print("Num "+str(elements[0][j])+": $"+str(elements[1][j])+", "+str(elements[2][j])+" cm3")
     print()
     return elements
 
@@ -89,7 +89,7 @@ def generateElementsForGreedy(N, isRandom, maxVol, maxPrice):
             elements[i].append(b)
     print("Elementos:")
     for j in range(N):
-        print("    Num "+str(elements[j][0])+": $"+str(elements[j][1])+", "+str(elements[j][2])+" gramos, beneficio "+str(elements[j][3]))
+        print("    Num "+str(elements[j][0])+": $"+str(elements[j][1])+", "+str(elements[j][2])+" cm3, beneficio "+str(elements[j][3]))
     elements.sort(key=lambda x: x[3], reverse=True)  # Orders by benefit (higher to lower)
     return elements
 
@@ -117,11 +117,11 @@ def loadBackpack(N, elements, maxVolume, initialTime):
     backpack.sort(key=lambda x: x[0])           # Orders by item number (lower to higher)
     print()
     print("Valor Acumulado de Precios: $" + str(round(partialP, 3)))
-    print("Peso Total: " + str(round(partialV, 3)) + " gramos")
+    print("Peso Total: " + str(round(partialV, 3)) + " cm3")
     # print("Beneficio acumulado: " + str(round(partialB, 3)))
     print("Elementos cargados:")
     for j in range(len(backpack)):
-        print("    Num " + str(backpack[j][0]) + ": $" + str(backpack[j][1]) + ", " + str(backpack[j][2]) + " gramos, beneifcio " + str(backpack[j][3]))
+        print("    Num " + str(backpack[j][0]) + ": $" + str(backpack[j][1]) + ", " + str(backpack[j][2]) + " cm3, beneficio " + str(backpack[j][3]))
     finalTime = time()
     return finalTime-initialTime
 
@@ -147,7 +147,7 @@ def calculatePossibleSolutions(elements):
     print("Conjunto de Posibles Soluciones:")
     print("Solución --- Precio --- Volumen --- Elementos")
     for j in range(len(solutions)):
-        print("S"+str(j)+": $"+str(solutions[j][0])+", "+str(solutions[j][1])+" gramos, elementos:", solutions[j][2])
+        print("S"+str(j)+": $"+str(solutions[j][0])+", "+str(solutions[j][1])+" cm3, elementos:", solutions[j][2])
     print()
     return solutions
 
@@ -166,11 +166,11 @@ def findBestSolution(solutions, maxVol, initialTime):
     print("La Solución Óptima es: S" + str(best))
     if best != 0:
         print("Valor Acumulado de Precios: $" + str(solutions[best][0]))
-        print("Peso Total: " + str(solutions[best][1]) + " gramos")
+        print("Peso Total: " + str(solutions[best][1]) + " cm3")
         print("Elementos:", solutions[best][2])
         for j in range(len(solutions[best][2])):
             k = solutions[best][2][j]-1
-            print("    Num "+str(elements[0][k])+": $"+str(elements[1][k])+", "+str(elements[2][k])+" gramos")
+            print("    Num "+str(elements[0][k])+": $"+str(elements[1][k])+", "+str(elements[2][k])+" cm3")
     else:
         print("Ningún elemento entra en la mochila")
     finalTime = time()
